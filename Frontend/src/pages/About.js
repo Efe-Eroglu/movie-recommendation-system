@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Typography, Button, Link, IconButton } from "@mui/material";
+import { Box, Typography, Button, IconButton } from "@mui/material";
 import { GitHub, LinkedIn, Twitter, Facebook } from "@mui/icons-material";
 
 const About = () => {
