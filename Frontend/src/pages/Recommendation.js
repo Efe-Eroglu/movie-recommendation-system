@@ -9,7 +9,9 @@ import {
   TextField,
   Autocomplete,
   Popper,
+  CircularProgress,
 } from "@mui/material";
+import axios from "axios";
 
 // Her zaman aşağı doğru açılan özelleştirilmiş Popper
 const CustomPopper = (props) => {
@@ -23,6 +25,9 @@ const Recommendations = () => {
     director: "",
     previousMovie: "",
   });
+  const [recommendations, setRecommendations] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   const steps = ["Film Türü", "Sevdiğiniz Yönetmen", "Önceki İzlenen Film"];
   const genres = [
@@ -49,8 +54,26 @@ const Recommendations = () => {
     "Schindler's List",
   ];
 
-  const handleNext = () => {
-    setActiveStep((prevStep) => prevStep + 1);
+  const handleNext = async () => {
+    if (activeStep === steps.length - 1) {
+      // Tüm adımlar tamamlandı, API çağrısını yap
+      setLoading(true);
+      setError(null);
+      try {
+        const response = await axios.post("http://127.0.0.1:5000/recommend", formData);
+        if (response.data.status === "success") {
+          setRecommendations(response.data.recommendations);
+        } else {
+          throw new Error(response.data.message || "Beklenmeyen bir hata oluştu.");
+        }
+      } catch (err) {
+        setError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    } else {
+      setActiveStep((prevStep) => prevStep + 1);
+    }
   };
 
   const handleBack = () => {
@@ -79,8 +102,7 @@ const Recommendations = () => {
         sx={{
           fontWeight: "bold",
           textTransform: "uppercase",
-          backgroundImage:
-            "linear-gradient(to right, #FF0000, #CC0E0E, #FF4500)",
+          backgroundImage: "linear-gradient(to right, #FF0000, #CC0E0E, #FF4500)",
           backgroundClip: "text",
           WebkitBackgroundClip: "text",
           WebkitTextFillColor: "transparent",
@@ -153,7 +175,7 @@ const Recommendations = () => {
             value={formData.director}
             onChange={(e, value) => handleInputChange("director", value)}
             disablePortal
-            PopperComponent={CustomPopper} // Özelleştirilmiş Popper
+            PopperComponent={CustomPopper}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -197,7 +219,7 @@ const Recommendations = () => {
             value={formData.previousMovie}
             onChange={(e, value) => handleInputChange("previousMovie", value)}
             disablePortal
-            PopperComponent={CustomPopper} // Özelleştirilmiş Popper
+            PopperComponent={CustomPopper}
             renderInput={(params) => (
               <TextField
                 {...params}
@@ -227,6 +249,19 @@ const Recommendations = () => {
             )}
             sx={{ backgroundColor: "#FFFFFF", borderRadius: 1 }}
           />
+        </Box>
+      )}
+
+      {loading && <CircularProgress />}
+      {error && <Typography color="error">{error}</Typography>}
+      {recommendations.length > 0 && (
+        <Box sx={{ mt: 4 }}>
+          <Typography variant="h6">Önerilen Filmler:</Typography>
+          <ul>
+            {recommendations.map((movie, index) => (
+              <li key={index}>{movie}</li>
+            ))}
+          </ul>
         </Box>
       )}
 
