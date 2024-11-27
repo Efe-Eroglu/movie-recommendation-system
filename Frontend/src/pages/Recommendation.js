@@ -1,72 +1,36 @@
 import React, { useState } from "react";
-import {
-  Box,
-  Typography,
-  Button,
-  Stepper,
-  Step,
-  StepLabel,
-  TextField,
-  Autocomplete,
-  Popper,
-  CircularProgress,
-} from "@mui/material";
-import axios from "axios";
+import { Box, Typography, Button, CircularProgress } from "@mui/material";
+import StepperComponent from "../components/StepperComponent";
+import StepGenreSelection from "../components/StepGenreSelection";
+import StepDirectorSelection from "../components/StepDirectorsSelection";
+import StepPreviousMovieSelection from "../components/StepPreviousMovieSelection";
+import NavigationButtons from "../components/NavigationButton";
+import { getRecommendations } from "../service/apiService";
 
-// Her zaman aşağı doğru açılan özelleştirilmiş Popper
-const CustomPopper = (props) => {
-  return <Popper {...props} placement="bottom-start" />;
-};
+import genresData from "../data/movie_genres.json";
+import directorsData from "../data/director_names.json";
+import moviesData from "../data/movies.json";
 
 const Recommendations = () => {
   const [activeStep, setActiveStep] = useState(0);
-  const [formData, setFormData] = useState({
-    genre: "",
-    director: "",
-    previousMovie: "",
-  });
+  const [formData, setFormData] = useState({ genre: "", director: "", previousMovie: "" });
   const [recommendations, setRecommendations] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState("");
 
   const steps = ["Film Türü", "Sevdiğiniz Yönetmen", "Önceki İzlenen Film"];
-  const genres = [
-    "Aksiyon",
-    "Komedi",
-    "Drama",
-    "Bilim Kurgu",
-    "Romantik",
-    "Korku",
-    "Macera",
-  ];
-  const directors = [
-    "Christopher Nolan",
-    "Quentin Tarantino",
-    "Steven Spielberg",
-    "Martin Scorsese",
-    "Alfred Hitchcock",
-  ];
-  const movies = [
-    "Inception",
-    "The Dark Knight",
-    "Pulp Fiction",
-    "The Godfather",
-    "Schindler's List",
-  ];
 
   const handleNext = async () => {
     if (activeStep === steps.length - 1) {
-      // Tüm adımlar tamamlandı, API çağrısını yap
       setLoading(true);
-      setError(null);
+      setError("");
       try {
-        const response = await axios.post("http://127.0.0.1:5000/recommend", formData);
-        if (response.data.status === "success") {
-          setRecommendations(response.data.recommendations);
-        } else {
-          throw new Error(response.data.message || "Beklenmeyen bir hata oluştu.");
-        }
+        console.log("Form data : ", formData);
+        debugger; 
+        const response = await getRecommendations(formData);
+        setRecommendations(response);
       } catch (err) {
+        console.log("Err : ", err);
         setError(err.message);
       } finally {
         setLoading(false);
@@ -76,13 +40,9 @@ const Recommendations = () => {
     }
   };
 
-  const handleBack = () => {
-    setActiveStep((prevStep) => prevStep - 1);
-  };
+  const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
 
-  const handleInputChange = (field, value) => {
-    setFormData({ ...formData, [field]: value });
-  };
+  const handleInputChange = (field, value) => setFormData({ ...formData, [field]: value });
 
   return (
     <Box
@@ -112,193 +72,79 @@ const Recommendations = () => {
         Film Önerisi
       </Typography>
 
-      <Stepper activeStep={activeStep} alternativeLabel sx={{ width: "80%", mb: 4 }}>
-        {steps.map((label) => (
-          <Step key={label}>
-            <StepLabel sx={{ color: "#FFFFFF" }}>{label}</StepLabel>
-          </Step>
-        ))}
-      </Stepper>
+      {recommendations.length === 0 && !loading ? (
+        <>
+          <StepperComponent steps={steps} activeStep={activeStep} />
 
-      {activeStep === 0 && (
-        <Box sx={{ width: "80%", textAlign: "center", mb: 4 }}>
-          <Typography variant="h6" mb={2}>
-            İzlemek istediğiniz film türünü seçin:
-          </Typography>
-          <Autocomplete
-            options={genres}
-            getOptionLabel={(option) => option}
-            value={formData.genre}
-            onChange={(e, value) => handleInputChange("genre", value)}
-            disablePortal
-            PopperComponent={CustomPopper} // Özelleştirilmiş Popper
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Film Türü"
-                variant="outlined"
-                sx={{
-                  "& .MuiInputBase-root": {
-                    color: "#000000",
-                  },
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#FF0000",
-                  },
-                  "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#FF4500",
-                  },
-                  "& .MuiInputLabel-root": {
-                    color: "#FF0000",
-                    fontWeight: "bold",
-                  },
-                  "& .MuiInputLabel-root.Mui-focused": {
-                    color: "#FF0000",
-                    fontWeight: "bold",
-                    fontSize: "1.2rem",
-                  },
-                }}
-              />
-            )}
-            sx={{ backgroundColor: "#FFFFFF", borderRadius: 1 }}
+          {activeStep === 0 && (
+            <StepGenreSelection
+              formData={formData}
+              handleInputChange={handleInputChange}
+              genres={genresData.unique_movie_genres}
+            />
+          )}
+          {activeStep === 1 && (
+            <StepDirectorSelection
+              formData={formData}
+              handleInputChange={handleInputChange}
+              directors={directorsData.unique_director_names}
+            />
+          )}
+          {activeStep === 2 && (
+            <StepPreviousMovieSelection
+              formData={formData}
+              handleInputChange={handleInputChange}
+              movies={moviesData.map((movie) => movie.movie_title)}
+            />
+          )}
+
+          <NavigationButtons
+            activeStep={activeStep}
+            steps={steps}
+            handleBack={handleBack}
+            handleNext={handleNext}
+            formData={formData}
           />
-        </Box>
-      )}
-
-      {activeStep === 1 && (
-        <Box sx={{ width: "80%", textAlign: "center", mb: 4 }}>
-          <Typography variant="h6" mb={2}>
-            Sevdiğiniz yönetmeni seçin:
+        </>
+      ) : loading ? (
+        <CircularProgress sx={{ color: "#FF0000", mt: 4 }} />
+      ) : (
+        <>
+          <Typography variant="h5" sx={{ mb: 4 }}>
+            Sizin İçin Önerilen Filmler:
           </Typography>
-          <Autocomplete
-            options={directors}
-            getOptionLabel={(option) => option}
-            value={formData.director}
-            onChange={(e, value) => handleInputChange("director", value)}
-            disablePortal
-            PopperComponent={CustomPopper}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Yönetmen"
-                variant="outlined"
-                sx={{
-                  "& .MuiInputBase-root": {
-                    color: "#000000",
-                  },
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#FF0000",
-                  },
-                  "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#FF4500",
-                  },
-                  "& .MuiInputLabel-root": {
-                    color: "#FF0000",
-                    fontWeight: "bold",
-                  },
-                  "& .MuiInputLabel-root.Mui-focused": {
-                    color: "#FF0000",
-                    fontWeight: "bold",
-                    fontSize: "1.2rem",
-                  },
-                }}
-              />
-            )}
-            sx={{ backgroundColor: "#FFFFFF", borderRadius: 1 }}
-          />
-        </Box>
-      )}
-
-      {activeStep === 2 && (
-        <Box sx={{ width: "80%", textAlign: "center", mb: 4 }}>
-          <Typography variant="h6" mb={2}>
-            Daha önce izlediğiniz bir filmi seçin:
-          </Typography>
-          <Autocomplete
-            options={movies}
-            getOptionLabel={(option) => option}
-            value={formData.previousMovie}
-            onChange={(e, value) => handleInputChange("previousMovie", value)}
-            disablePortal
-            PopperComponent={CustomPopper}
-            renderInput={(params) => (
-              <TextField
-                {...params}
-                label="Film"
-                variant="outlined"
-                sx={{
-                  "& .MuiInputBase-root": {
-                    color: "#000000",
-                  },
-                  "& .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#FF0000",
-                  },
-                  "&:hover .MuiOutlinedInput-notchedOutline": {
-                    borderColor: "#FF4500",
-                  },
-                  "& .MuiInputLabel-root": {
-                    color: "#FF0000",
-                    fontWeight: "bold",
-                  },
-                  "& .MuiInputLabel-root.Mui-focused": {
-                    color: "#FF0000",
-                    fontWeight: "bold",
-                    fontSize: "1.2rem",
-                  },
-                }}
-              />
-            )}
-            sx={{ backgroundColor: "#FFFFFF", borderRadius: 1 }}
-          />
-        </Box>
-      )}
-
-      {loading && <CircularProgress />}
-      {error && <Typography color="error">{error}</Typography>}
-      {recommendations.length > 0 && (
-        <Box sx={{ mt: 4 }}>
-          <Typography variant="h6">Önerilen Filmler:</Typography>
-          <ul>
-            {recommendations.map((movie, index) => (
-              <li key={index}>{movie}</li>
+          <Box sx={{ textAlign: "center" }}>
+            {recommendations.map((rec, index) => (
+              <Typography key={index} sx={{ mb: 2 }}>
+                {index + 1}. {rec.movie_title} - Tür: {rec.movie_genres} - Yönetmen: {rec.director_names} - IMDb:{" "}
+                {rec.rating}
+              </Typography>
             ))}
-          </ul>
-        </Box>
+          </Box>
+          <Button
+            variant="outlined"
+            sx={{
+              color: "#FFFFFF",
+              borderColor: "#FF0000",
+              mt: 4,
+              "&:hover": { backgroundColor: "#FF0000", color: "#FFFFFF" },
+            }}
+            onClick={() => {
+              setRecommendations([]);
+              setActiveStep(0);
+              setFormData({ genre: "", director: "", previousMovie: "" });
+            }}
+          >
+            Yeniden Başlat
+          </Button>
+        </>
       )}
 
-      <Box sx={{ display: "flex", justifyContent: "space-between", width: "80%" }}>
-        <Button
-          disabled={activeStep === 0}
-          onClick={handleBack}
-          sx={{
-            color: "#FFFFFF",
-            borderColor: "#FF0000",
-            "&:hover": {
-              backgroundColor: "#FF0000",
-              color: "#FFFFFF",
-            },
-          }}
-        >
-          Geri
-        </Button>
-        <Button
-          onClick={handleNext}
-          disabled={
-            (activeStep === 0 && !formData.genre) ||
-            (activeStep === 1 && !formData.director) ||
-            (activeStep === 2 && !formData.previousMovie)
-          }
-          sx={{
-            color: "#FFFFFF",
-            borderColor: "#FF0000",
-            "&:hover": {
-              backgroundColor: "#FF0000",
-              color: "#FFFFFF",
-            },
-          }}
-        >
-          {activeStep === steps.length - 1 ? "Tamamla" : "İleri"}
-        </Button>
-      </Box>
+      {error && (
+        <Typography variant="body1" sx={{ color: "red", mt: 2 }}>
+          Hata: {error}
+        </Typography>
+      )}
     </Box>
   );
 };

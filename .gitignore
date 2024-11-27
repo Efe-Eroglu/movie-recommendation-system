@@ -1,0 +1,56 @@
+# React için .gitignore
+node_modules/
+build/
+dist/
+.DS_Store
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# Log dosyaları
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Editor spesifik
+.idea/
+.vscode/
+*.swp
+*.swo
+*.swn
+
+# MacOS için
+.DS_Store
+.Trashes
+
+# Go için .gitignore
+# Bin klasörü
+/bin/
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Test coverage dosyaları
+*.out
+
+# Go mod ve cache
+/go.mod
+/go.sum
+/vendor/
+
+# Go çalışma dosyaları
+*.test
+*.log
+
+# IDE ve çalışma ortamı dosyaları
+.idea/
+.vscode/
+*.iml
+
+# Genel
+*.swp
+*.swo
+*.tmp

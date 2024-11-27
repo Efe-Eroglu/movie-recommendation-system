@@ -1,27 +1,39 @@
 import pickle
+import pandas as pd
+from model.helpers import filter_movies_by_preferences, calculate_combined_score
 
-def recommend_movies_knn(movie_title, genre, director, model_file, top_n=5):
+def recommend_movies_knn(movie_title, genre, model_file, top_n=5):
     """
-    Kullanıcının izlemek istediği tür, sevdiği bir yönetmen ve daha önce izlediği bir filme göre öneriler yapar.
+    Kullanıcının seçtiği tür ve izlediği film ile öneriler oluşturur.
     """
-    with open(model_file, 'rb') as file:
-        data, tfidf, knn = pickle.load(file)
+    try:
+        with open(model_file, 'rb') as file:
+            data, tfidf, knn = pickle.load(file)
+    except FileNotFoundError:
+        raise FileNotFoundError("Model dosyası bulunamadı.")
 
-    user_query = f"{genre} {director}"
+    filtered_data = filter_movies_by_preferences(data, genres=[genre])
+    if filtered_data.empty:
+        return []
+
     if movie_title:
         try:
-            movie_idx = data[data['movie_title'] == movie_title].index[0]
-            movie_features = data.iloc[movie_idx]['features']
-            user_query += f" {movie_features}"
+            movie_index = data[data['movie_title'] == movie_title].index[0]
         except IndexError:
-            print(f"Film '{movie_title}' veri setinde bulunamadı. Yalnızca tür ve yönetmene göre öneri yapılıyor.")
+            raise ValueError(f"İzlenen film bulunamadı: {movie_title}")
 
-    query_vector = tfidf.transform([user_query])
+        movie_features = tfidf.transform([data.iloc[movie_index]['features']])
 
-    print(f"'{movie_title}' filmi, '{genre}' türü ve '{director}' yönetmenine göre öneriler hesaplanıyor...")
-    distances, indices = knn.kneighbors(query_vector, n_neighbors=top_n)
+        n_neighbors = min(top_n, len(filtered_data))
+        knn.n_neighbors = n_neighbors
+        tfidf_matrix = tfidf.transform(filtered_data['features'])
+        knn.fit(tfidf_matrix)
 
-    recommended_movies = [
-        data.iloc[i]['movie_title'] for i in indices.flatten()
-    ]
-    return recommended_movies
+        distances, indices = knn.kneighbors(movie_features, n_neighbors=n_neighbors)
+
+        recommendations = filtered_data.iloc[indices[0]].copy()
+        recommendations['distance'] = distances[0]
+        recommendations = recommendations.sort_values('distance', ascending=True)
+        return recommendations[['movie_title', 'movie_genres', 'rating']].to_dict(orient='records')
+
+    return filtered_data.head(top_n)[['movie_title', 'movie_genres', 'rating']].to_dict(orient='records')
