@@ -1,0 +1,32 @@
+{
+    "unique_movie_genres": [
+        "Horror",
+        "History",
+        "Romance",
+        "Animation",
+        "Talk-Show",
+        "Comedy",
+        "Crime",
+        "Sci-Fi",
+        "Fantasy",
+        "Music",
+        "Sport",
+        "Reality-TV",
+        "Action",
+        "Mystery",
+        "News",
+        "Thriller",
+        "Western",
+        "War",
+        "Biography",
+        "Musical",
+        "Family",
+        "Game-Show",
+        "Documentary",
+        "Adventure",
+        "Short",
+        "Film-Noir",
+        "Drama",
+        "Adult"
+    ]
+}
