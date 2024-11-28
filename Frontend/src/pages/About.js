@@ -1,6 +1,10 @@
 import React from "react";
 import { Box, Typography, Button, IconButton } from "@mui/material";
-import { GitHub, LinkedIn, Twitter, Facebook } from "@mui/icons-material";
+import {
+  GitHub,
+  LinkedIn,
+  YouTube,
+} from "@mui/icons-material";
 
 const About = () => {
   return (
@@ -31,7 +35,7 @@ const About = () => {
           marginBottom: 2,
         }}
       >
-        Hakkımızda
+        About Us
       </Typography>
 
       <Typography
@@ -43,14 +47,14 @@ const About = () => {
           lineHeight: 1.6,
         }}
       >
-        Movie Recommender projesi, kullanıcıların film tercihlerine göre
-        kişiselleştirilmiş öneriler sunmayı amaçlayan modern bir web
-        uygulamasıdır. Proje, popüler film verilerini analiz ederek kullanıcı
-        alışkanlıklarına uygun öneriler üretir.
+        Movie Recommendation project based on users' movie preferences a modern
+        web that aims to provide personalized recommendations Application. The
+        project analyzes popular movie data to identify users produce
+        suggestions appropriate to their habits.
       </Typography>
 
       <Typography variant="h5" sx={{ fontWeight: "bold", marginBottom: 2 }}>
-        Bize Ulaşın
+        Contact us
       </Typography>
       <Box sx={{ display: "flex", gap: 3, marginBottom: 4 }}>
         <IconButton
@@ -86,7 +90,7 @@ const About = () => {
           <LinkedIn />
         </IconButton>
         <IconButton
-          href="https://twitter.com/your-profile"
+          href="https://www.youtube.com/@Efe-gg7ez"
           target="_blank"
           sx={{
             backgroundImage:
@@ -99,24 +103,9 @@ const About = () => {
             },
           }}
         >
-          <Twitter />
+          <YouTube />
         </IconButton>
-        <IconButton
-          href="https://facebook.com/your-profile"
-          target="_blank"
-          sx={{
-            backgroundImage:
-              "linear-gradient(to right, #FF0000, #CC0E0E, #FF4500)",
-            color: "#FFFFFF",
-            borderRadius: "50%",
-            "&:hover": {
-              backgroundImage:
-                "linear-gradient(to right, #CC0E0E, #FF4500, #FF0000)",
-            },
-          }}
-        >
-          <Facebook />
-        </IconButton>
+
       </Box>
 
       <Button
@@ -134,7 +123,7 @@ const About = () => {
           },
         }}
       >
-        Ana Sayfaya Dön
+        Back to Home Page
       </Button>
     </Box>
   );

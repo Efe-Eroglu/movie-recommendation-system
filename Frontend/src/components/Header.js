@@ -66,7 +66,7 @@ const Header = () => (
             },
           }}
         >
-          Ana Sayfa
+          Home
         </Button>
         <Button
           color="inherit"
@@ -81,7 +81,7 @@ const Header = () => (
             },
           }}
         >
-          Tavsiye Al
+          Recommender
         </Button>
         <Button
           color="inherit"
@@ -96,7 +96,7 @@ const Header = () => (
             },
           }}
         >
-          Hakkımızda
+          ABOUT US
         </Button>
       </Box>
     </Toolbar>
