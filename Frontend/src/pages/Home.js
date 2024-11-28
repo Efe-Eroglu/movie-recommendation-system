@@ -28,7 +28,7 @@ const Home = () => (
         marginBottom: 2,
       }}
     >
-      Fİlm Önerİcİye Hoşgeldİnİz
+      Welcome to Film Recommender
     </Typography>
 
     <Typography
@@ -39,7 +39,7 @@ const Home = () => (
         lineHeight: 1.6,
       }}
     >
-      Size özel olarak kişiselleştirilmiş en iyi filmleri keşfet ve Tadına bak.
+            Discover and Taste the best movies personalized just for you.
     </Typography>
 
     <Box sx={{ display: "flex", gap: 3 }}>
@@ -61,7 +61,7 @@ const Home = () => (
         }}
         href="/recommendations"
       >
-        Tavsiye Al
+        Get Advice
       </Button>
 
       <Button
@@ -81,7 +81,7 @@ const Home = () => (
         }}
         href="/about"
       >
-        Daha Fazla Bilgi
+        More Information
       </Button>
     </Box>
   </Box>

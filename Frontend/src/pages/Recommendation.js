@@ -5,11 +5,20 @@ import StepGenreSelection from "../components/StepGenreSelection";
 import StepDirectorSelection from "../components/StepDirectorsSelection";
 import StepPreviousMovieSelection from "../components/StepPreviousMovieSelection";
 import NavigationButtons from "../components/NavigationButton";
-import { getRecommendations, fetchGenres, fetchDirectors, fetchMovies } from "../service/apiService";
+import {
+  getRecommendations,
+  fetchGenres,
+  fetchDirectors,
+  fetchMovies,
+} from "../service/apiService";
 
 const Recommendations = () => {
   const [activeStep, setActiveStep] = useState(0);
-  const [formData, setFormData] = useState({ genre: "", director: "", previousMovie: "" });
+  const [formData, setFormData] = useState({
+    genre: "",
+    director: "",
+    previousMovie: "",
+  });
   const [recommendations, setRecommendations] = useState([]);
   const [genres, setGenres] = useState([]);
   const [directors, setDirectors] = useState([]);
@@ -17,7 +26,7 @@ const Recommendations = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
-  const steps = ["Film Türü", "Sevdiğiniz Yönetmen", "Önceki İzlenen Film"];
+  const steps = ["Movie Genre", "Your Favorite Director", "Previous Watch Movie"];
 
   useEffect(() => {
     const loadData = async () => {
@@ -56,7 +65,8 @@ const Recommendations = () => {
 
   const handleBack = () => setActiveStep((prevStep) => prevStep - 1);
 
-  const handleInputChange = (field, value) => setFormData({ ...formData, [field]: value });
+  const handleInputChange = (field, value) =>
+    setFormData({ ...formData, [field]: value });
 
   return (
     <Box
@@ -76,14 +86,15 @@ const Recommendations = () => {
         sx={{
           fontWeight: "bold",
           textTransform: "uppercase",
-          backgroundImage: "linear-gradient(to right, #FF0000, #CC0E0E, #FF4500)",
+          backgroundImage:
+            "linear-gradient(to right, #FF0000, #CC0E0E, #FF4500)",
           backgroundClip: "text",
           WebkitBackgroundClip: "text",
           WebkitTextFillColor: "transparent",
           marginBottom: 4,
         }}
       >
-        Film Önerisi
+        Movie Recommendation
       </Typography>
 
       {recommendations.length === 0 && !loading ? (
@@ -125,12 +136,13 @@ const Recommendations = () => {
       ) : (
         <>
           <Typography variant="h5" sx={{ mb: 4 }}>
-            Sizin İçin Önerilen Filmler:
+            Recommended Movies For You:
           </Typography>
           <Box sx={{ textAlign: "center" }}>
             {recommendations.map((rec, index) => (
               <Typography key={index} sx={{ mb: 2 }}>
-                {index + 1}. {rec.movie_title} - Tür: {rec.movie_genres} - Yönetmen: {rec.director_names}
+                {index + 1}. {rec.movie_title} - Tür: {rec.movie_genres} -
+                Yönetmen: {rec.director_names}
               </Typography>
             ))}
           </Box>
@@ -148,14 +160,14 @@ const Recommendations = () => {
               setFormData({ genre: "", director: "", previousMovie: "" });
             }}
           >
-            Yeniden Başlat
+            Restart
           </Button>
         </>
       )}
 
       {error && (
         <Typography variant="body1" sx={{ color: "red", mt: 2 }}>
-          Hata: {error}
+          Error: {error}
         </Typography>
       )}
     </Box>

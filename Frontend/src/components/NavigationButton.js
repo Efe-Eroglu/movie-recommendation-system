@@ -12,7 +12,7 @@ const NavigationButtons = ({ activeStep, steps, handleBack, handleNext, formData
         "&:hover": { backgroundColor: "#FF0000", color: "#FFFFFF" },
       }}
     >
-      Geri
+      Back
     </Button>
     <Button
       onClick={handleNext}
