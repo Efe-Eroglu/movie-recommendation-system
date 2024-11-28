@@ -99,28 +99,28 @@ Bu proje, kullanıcılara kişisel film önerileri sunan bir web uygulamasıdır
 ## Kurulum
 
 1. Projeyi bilgisayarınıza klonlayın:
-   ```bash
-   https://github.com/Efe-Eroglu/movie-recommendation-system.git
-   ```
+  ```bash
+  https://github.com/Efe-Eroglu/movie-recommendation-system.git
+  ```
 
 2. Backendi Çalıştırma
   ```bash
-    cd movie-recommendation-system/Backend
-    python run.py
+  cd movie-recommendation-system/Backend
+  python run.py
   ```
 
 
 3. Frontendi Çalıştırma
   ```bash
-    cd movie-recommendation-system/Frontend
-    npm start
+  cd movie-recommendation-system/Frontend
+  npm start
   ```
 
 4. Tarayıcıyı Açın
-   ```bash
-   # Tarayıcınızdan bu adrese gidin
-    http://localhost:3000/
-   ```
+  ```bash
+  # Tarayıcınızdan bu adrese gidin
+  http://localhost:3000/
+  ```
 
 ## Not 
 * Bu projede IMBD verileri kullanılmıştır veriye resmi siteden ulaşabilirsiniz.
