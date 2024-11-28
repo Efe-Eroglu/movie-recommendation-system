@@ -27,7 +27,7 @@ const NavigationButtons = ({ activeStep, steps, handleBack, handleNext, formData
         "&:hover": { backgroundColor: "#FF0000", color: "#FFFFFF" },
       }}
     >
-      {activeStep === steps.length - 1 ? "Tamamla" : "İleri"}
+      {activeStep === steps.length - 1 ? "Finish" : "Next"}
     </Button>
   </Box>
 );

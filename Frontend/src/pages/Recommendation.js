@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Box, Typography, Button, CircularProgress } from "@mui/material";
+import { Box, Typography, Button, CircularProgress, Card, CardMedia, CardContent, Grid } from "@mui/material";
 import StepperComponent from "../components/StepperComponent";
 import StepGenreSelection from "../components/StepGenreSelection";
 import StepDirectorSelection from "../components/StepDirectorsSelection";
@@ -40,7 +40,7 @@ const Recommendations = () => {
         setDirectors(directorsData);
         setMovies(moviesData);
       } catch (err) {
-        setError("Veriler yüklenirken bir hata oluştu.");
+        setError("Error loading data.");
       }
     };
     loadData();
@@ -138,14 +138,52 @@ const Recommendations = () => {
           <Typography variant="h5" sx={{ mb: 4 }}>
             Recommended Movies For You:
           </Typography>
-          <Box sx={{ textAlign: "center" }}>
+
+          <Grid
+            container
+            spacing={3}
+            justifyContent="center"
+            sx={{
+              marginBottom: 4,
+              display: "flex",
+              justifyContent: "center",
+              flexWrap: "wrap",
+            }}
+          >
             {recommendations.map((rec, index) => (
-              <Typography key={index} sx={{ mb: 2 }}>
-                {index + 1}. {rec.movie_title} - Tür: {rec.movie_genres} -
-                Yönetmen: {rec.director_names}
-              </Typography>
+              <Grid item xs={2.4} key={index}> 
+                <Card
+                  sx={{
+                    maxWidth: 345,
+                    backgroundColor: "#1a1a1a",
+                    color: "#FFF",
+                    borderRadius: 2,
+                    boxShadow: 3,
+                    height: 350, 
+                    transition: "transform 0.3s ease, box-shadow 0.3s ease",
+                    "&:hover": {
+                      transform: "scale(1.05)",
+                      boxShadow: "4px 6px 25px rgba(255, 0, 0, 0.3)",
+                    },
+                  }}
+                >
+                  <CardMedia
+                    component="img"
+                    height="250"
+                    image={rec.movie_poster || "https://upload.wikimedia.org/wikipedia/commons/c/c2/No_image_poster.png"}
+                    alt={rec.movie_title}
+                  />
+                  <CardContent>
+                    <Typography variant="h6">{rec.movie_title}</Typography>
+                    <Typography variant="body2" color="text.secondary">
+                      Directed by: {rec.director_names}
+                    </Typography>
+                  </CardContent>
+                </Card>
+              </Grid>
             ))}
-          </Box>
+          </Grid>
+
           <Button
             variant="outlined"
             sx={{
