@@ -56,4 +56,4 @@ htmlcov/
 *.tmp
 *.temp
 
-!Backend/data/sbert_model.pkl
+Backend/data/sbert_model.pkl
