@@ -1,24 +1,41 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Box, Typography, Button, CircularProgress } from "@mui/material";
 import StepperComponent from "../components/StepperComponent";
 import StepGenreSelection from "../components/StepGenreSelection";
 import StepDirectorSelection from "../components/StepDirectorsSelection";
 import StepPreviousMovieSelection from "../components/StepPreviousMovieSelection";
 import NavigationButtons from "../components/NavigationButton";
-import { getRecommendations } from "../service/apiService";
-
-import genresData from "../data/movie_genres.json";
-import directorsData from "../data/director_names.json";
-import moviesData from "../data/movies.json";
+import { getRecommendations, fetchGenres, fetchDirectors, fetchMovies } from "../service/apiService";
 
 const Recommendations = () => {
   const [activeStep, setActiveStep] = useState(0);
   const [formData, setFormData] = useState({ genre: "", director: "", previousMovie: "" });
   const [recommendations, setRecommendations] = useState([]);
+  const [genres, setGenres] = useState([]);
+  const [directors, setDirectors] = useState([]);
+  const [movies, setMovies] = useState([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
   const steps = ["Film Türü", "Sevdiğiniz Yönetmen", "Önceki İzlenen Film"];
+
+  useEffect(() => {
+    const loadData = async () => {
+      try {
+        const [genresData, directorsData, moviesData] = await Promise.all([
+          fetchGenres(),
+          fetchDirectors(),
+          fetchMovies(),
+        ]);
+        setGenres(genresData);
+        setDirectors(directorsData);
+        setMovies(moviesData);
+      } catch (err) {
+        setError("Veriler yüklenirken bir hata oluştu.");
+      }
+    };
+    loadData();
+  }, []);
 
   const handleNext = async () => {
     if (activeStep === steps.length - 1) {
@@ -77,21 +94,21 @@ const Recommendations = () => {
             <StepGenreSelection
               formData={formData}
               handleInputChange={handleInputChange}
-              genres={genresData.unique_movie_genres}
+              genres={genres}
             />
           )}
           {activeStep === 1 && (
             <StepDirectorSelection
               formData={formData}
               handleInputChange={handleInputChange}
-              directors={directorsData.unique_director_names}
+              directors={directors}
             />
           )}
           {activeStep === 2 && (
             <StepPreviousMovieSelection
               formData={formData}
               handleInputChange={handleInputChange}
-              movies={moviesData.map((movie) => movie.movie_title)}
+              movies={movies}
             />
           )}
 
