@@ -19,3 +19,18 @@ export const getRecommendations = async (formData) => {
     throw new Error(error.message || "Sunucuya bağlanırken bir hata oluştu.");
   }
 };
+
+export const fetchGenres = async () => {
+  const response = await axios.get(`${API_BASE_URL}/genres`);
+  return response.data.unique_movie_genres;
+};
+
+export const fetchDirectors = async (limit = 10, offset = 0) => {
+  const response = await axios.get(`${API_BASE_URL}/directors?limit=${limit}&offset=${offset}`);
+  return response.data;
+};
+
+export const fetchMovies = async (limit = 10, offset = 0) => {
+  const response = await axios.get(`${API_BASE_URL}/movies?limit=${limit}&offset=${offset}`);
+  return response.data;
+};
