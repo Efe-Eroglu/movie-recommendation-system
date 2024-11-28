@@ -25,12 +25,9 @@ const Recommendations = () => {
       setLoading(true);
       setError("");
       try {
-        console.log("Form data : ", formData);
-        debugger; 
         const response = await getRecommendations(formData);
         setRecommendations(response);
       } catch (err) {
-        console.log("Err : ", err);
         setError(err.message);
       } finally {
         setLoading(false);
@@ -116,8 +113,7 @@ const Recommendations = () => {
           <Box sx={{ textAlign: "center" }}>
             {recommendations.map((rec, index) => (
               <Typography key={index} sx={{ mb: 2 }}>
-                {index + 1}. {rec.movie_title} - Tür: {rec.movie_genres} - Yönetmen: {rec.director_names} - IMDb:{" "}
-                {rec.rating}
+                {index + 1}. {rec.movie_title} - Tür: {rec.movie_genres} - Yönetmen: {rec.director_names}
               </Typography>
             ))}
           </Box>
