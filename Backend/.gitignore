@@ -55,5 +55,3 @@ htmlcov/
 # Temporary files
 *.tmp
 *.temp
-
-/data/sbert_model.pkl
